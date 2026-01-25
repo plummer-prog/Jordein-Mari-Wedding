@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Find Your Seat - Jordein & Mari's Wedding</title>
+
+<style>
+body {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    background: #f7f7f7;
+    color: #4a4a4a;
+    margin: 0;
+}
+
+.overlay {
+    background-color: rgba(255,255,255,0.95);
+    padding: 40px;
+    border-radius: 15px;
+    max-width: 900px;
+    margin: 50px auto;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+h1 { font-size: 48px; color: #b56576; }
+h2 { font-size: 24px; color: #6d6875; }
+
+input {
+    padding: 12px;
+    width: 320px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.result {
+    margin-top: 20px;
+    background: #fff3f3;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+.floorplan {
+    position: relative;
+    width: 650px;
+    height: 450px;
+    margin: 30px auto;
+    background: #f0f0f0;
+}
+
+.table {
+    position: absolute;
+    padding: 10px 14px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.highlight {
+    background: #b56576;
+    color: #fff;
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(181,101,118,0.7);
+}
+
+.footer {
+    margin-top: 40px;
+    color: #6d6875;
+}
+</style>
+</head>
+
+<body>
+<div class="overlay">
+<h1>Welcome!</h1>
+<h2>Jordein & Mari's Wedding</h2>
+
+<p>Search your name to find your seat:</p>
+<input id="searchBox" placeholder="Enter your first or full name">
+<div id="result" class="result"></div>
+
+<div class="floorplan">
+    <div class="table" id="southShore" style="top:40px; left:80px;">South Shore</div>
+    <div class="table" id="eddie" style="top:40px; left:400px;">Eddie</div>
+    <div class="table" id="oldFashionedHazy" style="top:180px; left:60px;">Old Fashioned & Hazy IPA</div>
+    <div class="table" id="morningCoffee" style="top:180px; left:400px;">Morning Coffee</div>
+    <div class="table" id="cheeseCurds" style="top:320px; left:80px;">Cheese Curds</div>
+    <div class="table" id="fiserv" style="top:320px; left:400px;">Fiserv</div>
+    <div class="table" id="travelingTogether" style="top:250px; left:240px;">Traveling Together</div>
+</div>
+
+<div class="footer">We are so happy to celebrate with you!</div>
+</div>
+
+<script>
+const guests = {
+    "michele lucco": {table:"eddie",display:"Michele Lucco"},
+    "james lucco": {table:"eddie",display:"James Lucco"},
+    "kaylee corr": {table:"eddie",display:"Kaylee Corr"},
+    "adeline corr": {table:"eddie",display:"Adeline Corr"},
+    "henry corr": {table:"eddie",display:"Henry Corr"},
+    "joseph lucco": {table:"eddie",display:"Joseph Lucco"},
+    "brenda panton": {table:"eddie",display:"Brenda Panton"},
+    "sandy plummer": {table:"eddie",display:"Sandy Plummer"},
+    "stacie plummer": {table:"eddie",display:"Stacie Plummer"},
+    "peter lucco": {table:"eddie",display:"Peter Lucco"},
+    "nora lucco": {table:"eddie",display:"Nora Lucco"},
+    "kendra green": {table:"eddie",display:"Kendra Green"},
+    "kaelyn green": {table:"eddie",display:"Kaelyn Green"},
+    "donte green": {table:"eddie",display:"Donte Green"},
+    "maze green": {table:"eddie",display:"Maze Green"},
+
+    "michael mcneill": {table:"southShore",display:"Michael McNeill"},
+    "chris mcneill": {table:"southShore",display:"Chris McNeill"},
+    "denise mcneill": {table:"southShore",display:"Denise McNeill"},
+    "lee ann terhune": {table:"southShore",display:"Lee Ann Terhune"},
+    "peter mcneill": {table:"southShore",display:"Peter McNeill"},
+    "gary terhune": {table:"southShore",display:"Gary Terhune"},
+    "karen demun": {table:"southShore",display:"Karen DeMun"},
+
+    "felicia marrett": {table:"oldFashionedHazy",display:"Felicia Marrett"},
+    "emily": {table:"oldFashionedHazy",display:"Emily"},
+
+    "michael": {table:"morningCoffee",display:"Michael"},
+    "anna": {table:"cheeseCurds",display:"Anna"},
+
+    "andrew kaczmarek": {table:"fiserv",display:"Andrew Kaczmarek"},
+    "alison kaczmarek": {table:"fiserv",display:"Alison Kaczmarek"},
+    "jen reuteman": {table:"fiserv",display:"Jen Reuteman"},
+    "john retueman": {table:"fiserv",display:"John Retueman"},
+    "clare morin": {table:"fiserv",display:"Clare Morin"},
+    "mal mowbray": {table:"fiserv",display:"Mal Mowbray"},
+    "reese mowbray": {table:"fiserv",display:"Reese Mowbray"},
+    "david": {table:"fiserv",display:"David"},
+    "rachel": {table:"fiserv",display:"Rachel"},
+
+    "betsy funke": {table:"travelingTogether",display:"Betsy Funke & Guest"},
+    "christy": {table:"travelingTogether",display:"Christy & Matt"},
+    "matt": {table:"travelingTogether",display:"Christy & Matt"},
+    "chad": {table:"travelingTogether",display:"Chad & Guest"},
+    "betsy": {table:"travelingTogether",display:"Betsy & Justin"},
+    "justin": {table:"travelingTogether",display:"Betsy & Justin"},
+    "mallory": {table:"travelingTogether",display:"Mallory & Reese"},
+    "reese": {table:"travelingTogether",display:"Mallory & Reese"}
+};
+
+document.getElementById("searchBox").addEventListener("input", function () {
+    const input = this.value.trim().toLowerCase();
+    document.querySelectorAll(".table").forEach(t => t.classList.remove("highlight"));
+
+    if (!input) {
+        document.getElementById("result").innerHTML = "";
+        return;
+    }
+
+    const matchKey = Object.keys(guests).find(name => name.startsWith(input));
+
+    if (matchKey) {
+        const guest = guests[matchKey];
+        const tableDiv = document.getElementById(guest.table);
+
+        document.getElementById("result").innerHTML =
+            `We are so happy to have you celebrating our wedding, <strong>${guest.display}</strong>!<br>
+             Your table: <strong>${tableDiv.innerText}</strong><br>
+             Love, Jordein & Mari`;
+
+        tableDiv.classList.add("highlight");
+    } else {
+        document.getElementById("result").innerHTML =
+            "Name not found. Please check spelling.";
+    }
+});
+</script>
+</body>
+</html>
