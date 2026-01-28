@@ -3,147 +3,221 @@
 <head>
 <meta charset="UTF-8">
 <title>Find Your Seat - Jordein & Mari's Wedding</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root {
+    --accent: #b56576;
+    --bg: #f7f7f7;
+    --text: #4a4a4a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Playfair Display', serif;
-    text-align: center;
-    background: #f7f7f7;
-    color: #4a4a4a;
     margin: 0;
+    font-family: 'Playfair Display', serif;
+    background: var(--bg);
+    color: var(--text);
 }
 
 .overlay {
-    background-color: rgba(255,255,255,0.95);
-    padding: 40px;
-    border-radius: 15px;
-    max-width: 900px;
-    margin: 50px auto;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    background: rgba(255,255,255,0.96);
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-h1 { font-size: 48px; color: #b56576; }
-h2 { font-size: 24px; color: #6d6875; }
+h1 {
+    margin: 0;
+    font-size: clamp(32px, 6vw, 46px);
+    color: var(--accent);
+}
+
+h2 {
+    margin-top: 8px;
+    font-size: clamp(18px, 4vw, 24px);
+    color: #6d6875;
+}
+
+p {
+    font-size: 16px;
+}
 
 input {
-    padding: 12px;
-    width: 320px;
+    width: 100%;
+    max-width: 360px;
+    padding: 14px;
     font-size: 18px;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #ccc;
+    margin-top: 10px;
 }
 
 .result {
-    margin-top: 20px;
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 12px;
     background: #fff3f3;
-    padding: 15px;
-    border-radius: 10px;
-    font-size: 20px;
+    font-size: 18px;
+    min-height: 64px;
+}
+
+/* FLOORPLAN RESPONSIVE WRAPPER */
+.floorplan-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 24px;
 }
 
 .floorplan {
     position: relative;
-    width: 650px;
-    height: 450px;
-    margin: 30px auto;
-    background: #f0f0f0;
+    width: 700px;
+    aspect-ratio: 7 / 5;
+    margin: 0 auto;
+    background: url("floorplan.png") no-repeat center;
+    background-size: contain;
 }
 
+/* TABLE LABELS */
 .table {
     position: absolute;
-    padding: 10px 14px;
-    border-radius: 50%;
+    padding: 8px 12px;
     background: #e0e0e0;
-    font-weight: bold;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 13px;
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .highlight {
-    background: #b56576;
+    background: var(--accent);
     color: #fff;
     transform: scale(1.2);
-    box-shadow: 0 0 15px rgba(181,101,118,0.7);
+    box-shadow: 0 0 14px rgba(181,101,118,0.7);
 }
 
+/* FOOTER */
 .footer {
-    margin-top: 40px;
+    margin-top: 24px;
+    font-size: 15px;
     color: #6d6875;
+}
+
+/* MOBILE TWEAKS */
+@media (max-width: 768px) {
+    .overlay {
+        margin: 10px;
+        padding: 20px;
+    }
+
+    .floorplan {
+        width: 600px;
+    }
+
+    .table {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .floorplan {
+        width: 520px;
+    }
+
+    .result {
+        font-size: 16px;
+    }
 }
 </style>
 </head>
 
 <body>
 <div class="overlay">
-<h1>Welcome!</h1>
-<h2>Jordein & Mari's Wedding</h2>
+    <h1>Welcome!</h1>
+    <h2>Jordein & Mari's Wedding</h2>
 
-<p>Search your name to find your seat:</p>
-<input id="searchBox" placeholder="Enter your first or full name">
-<div id="result" class="result"></div>
+    <p>Search your name to find your seat:</p>
+    <input id="searchBox" placeholder="Enter your first or full name">
 
-<div class="floorplan">
-    <div class="table" id="southShore" style="top:40px; left:80px;">South Shore</div>
-    <div class="table" id="eddie" style="top:40px; left:400px;">Eddie</div>
-    <div class="table" id="oldFashionedHazy" style="top:180px; left:60px;">Old Fashioned & Hazy IPA</div>
-    <div class="table" id="morningCoffee" style="top:180px; left:400px;">Morning Coffee</div>
-    <div class="table" id="cheeseCurds" style="top:320px; left:80px;">Cheese Curds</div>
-    <div class="table" id="fiserv" style="top:320px; left:400px;">Fiserv</div>
-    <div class="table" id="travelingTogether" style="top:250px; left:240px;">Traveling Together</div>
-</div>
+    <div id="result" class="result"></div>
 
-<div class="footer">We are so happy to celebrate with you!</div>
+    <div class="floorplan-wrapper">
+        <div class="floorplan">
+            <div class="table" id="eddie" style="top:8%; left:12%;">Eddie</div>
+            <div class="table" id="eddie2" style="top:8%; left:60%;">Eddie 2</div>
+            <div class="table" id="southshore" style="top:42%; left:8%;">South Shore</div>
+            <div class="table" id="fiserv" style="top:42%; left:62%;">Fiserv</div>
+            <div class="table" id="oldfashioned" style="top:72%; left:12%;">Old Fashioned & IPA</div>
+            <div class="table" id="morningcoffee" style="top:72%; left:58%;">Morning Coffee</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        We are so happy to celebrate with you 🤍
+    </div>
 </div>
 
 <script>
 const guests = {
-    "michele lucco": {table:"eddie",display:"Michele Lucco"},
-    "james lucco": {table:"eddie",display:"James Lucco"},
-    "kaylee corr": {table:"eddie",display:"Kaylee Corr"},
-    "adeline corr": {table:"eddie",display:"Adeline Corr"},
-    "henry corr": {table:"eddie",display:"Henry Corr"},
-    "joseph lucco": {table:"eddie",display:"Joseph Lucco"},
-    "brenda panton": {table:"eddie",display:"Brenda Panton"},
-    "sandy plummer": {table:"eddie",display:"Sandy Plummer"},
-    "stacie plummer": {table:"eddie",display:"Stacie Plummer"},
-    "peter lucco": {table:"eddie",display:"Peter Lucco"},
-    "nora lucco": {table:"eddie",display:"Nora Lucco"},
-    "kendra green": {table:"eddie",display:"Kendra Green"},
-    "kaelyn green": {table:"eddie",display:"Kaelyn Green"},
-    "donte green": {table:"eddie",display:"Donte Green"},
-    "maze green": {table:"eddie",display:"Maze Green"},
+    "michele lucco": {table:"eddie", display:"Michele Lucco"},
+    "james lucco": {table:"eddie", display:"James Lucco"},
+    "kaylee corr": {table:"eddie", display:"Kaylee Corr"},
+    "ryan corr": {table:"eddie", display:"Ryan Corr"},
+    "henry corr": {table:"eddie", display:"Henry Corr"},
+    "joseph lucco": {table:"eddie", display:"Joseph Lucco"},
+    "emily lucco": {table:"eddie", display:"Emily Lucco"},
+    "peter lucco": {table:"eddie", display:"Peter Lucco"},
+    "nora lucco": {table:"eddie", display:"Nora Lucco"},
 
-    "michael mcneill": {table:"southShore",display:"Michael McNeill"},
-    "chris mcneill": {table:"southShore",display:"Chris McNeill"},
-    "denise mcneill": {table:"southShore",display:"Denise McNeill"},
-    "lee ann terhune": {table:"southShore",display:"Lee Ann Terhune"},
-    "peter mcneill": {table:"southShore",display:"Peter McNeill"},
-    "gary terhune": {table:"southShore",display:"Gary Terhune"},
-    "karen demun": {table:"southShore",display:"Karen DeMun"},
+    "brenda panton": {table:"eddie2", display:"Brenda Panton"},
+    "sandy plummer": {table:"eddie2", display:"Sandy Plummer"},
+    "stacie plummer": {table:"eddie2", display:"Stacie Plummer"},
+    "donte green": {table:"eddie2", display:"Donte Green"},
+    "kendra green": {table:"eddie2", display:"Kendra Green"},
+    "kaelyn green": {table:"eddie2", display:"Kaelyn Green"},
+    "maize green": {table:"eddie2", display:"Maize Green"},
 
-    "felicia marrett": {table:"oldFashionedHazy",display:"Felicia Marrett"},
-    "emily": {table:"oldFashionedHazy",display:"Emily"},
+    "michael mcneill": {table:"southshore", display:"Michael McNeill"},
+    "chris mcneill": {table:"southshore", display:"Chris McNeill"},
+    "denise mcneill": {table:"southshore", display:"Denise McNeill"},
+    "leeann terhune": {table:"southshore", display:"LeeAnn Terhune"},
+    "peter mcneill": {table:"southshore", display:"Peter McNeill"},
+    "karen demun": {table:"southshore", display:"Karen DeMun"},
 
-    "michael": {table:"morningCoffee",display:"Michael"},
-    "anna": {table:"cheeseCurds",display:"Anna"},
+    "andrew kaczmarek": {table:"fiserv", display:"Andrew Kaczmarek"},
+    "alison kaczmarek": {table:"fiserv", display:"Alison Kaczmarek"},
+    "jen reuteman": {table:"fiserv", display:"Jen Reuteman"},
+    "john retueman": {table:"fiserv", display:"John Retueman"},
+    "clare morin": {table:"fiserv", display:"Clare Morin"},
+    "mallory mowbray": {table:"fiserv", display:"Mallory Mowbray"},
+    "reese mowbray": {table:"fiserv", display:"Reese Mowbray"},
 
-    "andrew kaczmarek": {table:"fiserv",display:"Andrew Kaczmarek"},
-    "alison kaczmarek": {table:"fiserv",display:"Alison Kaczmarek"},
-    "jen reuteman": {table:"fiserv",display:"Jen Reuteman"},
-    "john retueman": {table:"fiserv",display:"John Retueman"},
-    "clare morin": {table:"fiserv",display:"Clare Morin"},
-    "mal mowbray": {table:"fiserv",display:"Mal Mowbray"},
-    "reese mowbray": {table:"fiserv",display:"Reese Mowbray"},
-    "david": {table:"fiserv",display:"David"},
-    "rachel": {table:"fiserv",display:"Rachel"},
+    "paula morehouse": {table:"oldfashioned", display:"Paula Morehouse"},
+    "jack morehouse": {table:"oldfashioned", display:"Jack Morehouse"},
+    "ellen marrett": {table:"oldfashioned", display:"Ellen Marrett"},
+    "carol plummer": {table:"oldfashioned", display:"Carol Plummer"},
+    "tanesha allen": {table:"oldfashioned", display:"Tanesha Allen"},
+    "andrea plummer": {table:"oldfashioned", display:"Andrea Plummer"},
+    "jacqueline panton": {table:"oldfashioned", display:"Jacqueline Panton"},
+    "albert williams": {table:"oldfashioned", display:"Albert Williams"},
+    "nicole panton": {table:"oldfashioned", display:"Nicole Panton"},
+    "sharon plummer": {table:"oldfashioned", display:"Sharon Plummer"},
 
-    "betsy funke": {table:"travelingTogether",display:"Betsy Funke & Guest"},
-    "christy": {table:"travelingTogether",display:"Christy & Matt"},
-    "matt": {table:"travelingTogether",display:"Christy & Matt"},
-    "chad": {table:"travelingTogether",display:"Chad & Guest"},
-    "betsy": {table:"travelingTogether",display:"Betsy & Justin"},
-    "justin": {table:"travelingTogether",display:"Betsy & Justin"},
-    "mallory": {table:"travelingTogether",display:"Mallory & Reese"},
-    "reese": {table:"travelingTogether",display:"Mallory & Reese"}
+    "aidan russell": {table:"morningcoffee", display:"Aidan Russell"},
+    "anjali russell": {table:"morningcoffee", display:"Anjali Russell"},
+    "amaya russell": {table:"morningcoffee", display:"Amaya Russell"},
+    "arianno russell": {table:"morningcoffee", display:"Arianno Russell"},
+    "alena russell": {table:"morningcoffee", display:"Alena Russell"},
+    "felcia marrett": {table:"morningcoffee", display:"Felcia Marrett"},
+    "shennel marrett": {table:"morningcoffee", display:"Shennel Marrett"},
+    "zachary plummer": {table:"morningcoffee", display:"Zachary Plummer"}
 };
 
 document.getElementById("searchBox").addEventListener("input", function () {
@@ -162,7 +236,7 @@ document.getElementById("searchBox").addEventListener("input", function () {
         const tableDiv = document.getElementById(guest.table);
 
         document.getElementById("result").innerHTML =
-            `We are so happy to have you celebrating our wedding, <strong>${guest.display}</strong>!<br>
+            `We are so happy to have you celebrating with us, <strong>${guest.display}</strong>!<br>
              Your table: <strong>${tableDiv.innerText}</strong><br>
              Love, Jordein & Mari`;
 
