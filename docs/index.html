@@ -18,10 +18,7 @@ body {
     min-height: 100vh;
     font-family: 'Playfair Display', serif;
     color: var(--text-dark);
-    background:
-        linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)),
-        url("https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0567.png")
-        no-repeat center 65% / cover;
+    background: #fff;
 }
 
 .overlay {
@@ -29,10 +26,9 @@ body {
     margin: 28px auto;
     padding: 30px 26px;
     border-radius: 22px;
-    background: rgba(255,255,255,0.60);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    background: rgba(255,255,255,0.98); /* nearly opaque for clear images */
     text-align: center;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
 }
 
 h1 {
@@ -67,9 +63,9 @@ input {
     min-height: 80px;
 }
 
-/* 💕 Couple Photo Styling */
+/* Couple Photo Styling */
 .couple-photo {
-    margin: 24px auto 0 auto;   /* centers horizontally */
+    margin: 24px auto;
     width: 100%;
     max-width: 520px;
     border-radius: 18px;
@@ -86,29 +82,26 @@ input {
     display: block;
 }
 
-
 .floorplan-viewport {
     margin: 28px auto 0;
     width: 100%;
-    max-width: 600px;
-    aspect-ratio: 7 / 5;
+    max-width: 800px;
     border-radius: 18px;
     overflow: hidden;
     display: none;
     background: #fff;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.25);
 }
 
 .floorplan-container {
     position: relative;
     width: 100%;
-    height: 100%;
 }
 
 .floorplan-container img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    display: block;
 }
 
 .table-marker {
@@ -152,11 +145,15 @@ input {
     <p>Search your name to find your seat:</p>
     <input id="searchBox" placeholder="Enter your first or full name">
 
-    <div id="result" class="result"></div>
+    <div id="result" class="result">
+        <div class="couple-photo">
+            <img src="https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0567.png" alt="Jordein & Mari">
+        </div>
+    </div>
 
     <div id="viewport" class="floorplan-viewport">
         <div class="floorplan-container">
-            <img src="https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0557.jpg">
+            <img src="https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0557.jpg" alt="Floorplan">
             <div id="marker" class="table-marker"></div>
             <div id="label" class="table-label"></div>
         </div>
@@ -169,16 +166,15 @@ input {
 
 <script>
 const tablePositions = {
-    eddie:{x:50,y:10,label:"Eddie"},
-    southshore:{x:50,y:38,label:"South Shore"},
-    travelingtogether:{x:20,y:38,label:"Traveling Together"},
-    oldfashioned:{x:80,y:38,label:"IPA & Old Fashioned"},
-    fiserv:{x:35,y:70,label:"Fiserv"},
-    morningcoffee:{x:65,y:70,label:"Morning Coffee"}
+    eddie: { x: 48.41, y: 17.40, label: "Eddie" },
+    travelingtogether: { x: 19.89, y: 50.72, label: "Traveling Together" },
+    southshore: { x: 50.80, y: 53.27, label: "South Shore" },
+    oldfashioned: { x: 82.23, y: 51.08, label: "IPA & Old Fashioned" },
+    morningcoffee: { x: 63.53, y: 80.51, label: "Morning Coffee" },
+    fiserv: { x: 36.87, y: 80.02, label: "Fiserv" }
 };
 
 const guests = {
-
     /* EDDIE */
     "michele lucco": {table:"eddie", display:"Michele Lucco"},
     "james lucco": {table:"eddie", display:"James Lucco"},
@@ -190,17 +186,16 @@ const guests = {
     "emily lucco": {table:"eddie", display:"Emily Lucco"},
     "peter lucco": {table:"eddie", display:"Peter Lucco"},
     "nora lucco": {table:"eddie", display:"Nora Lucco"},
-
-    /* EDDIE 2 */
-    "brenda panton": {table:"eddie", display:"Brenda Panton"},
-    "sandy plummer": {table:"eddie", display:"Sandy Plummer"},
-    "stacie plummer": {table:"eddie", display:"Stacie Plummer"},
-    "donte green": {table:"eddie", display:"Donte Green"},
-    "kendra green": {table:"eddie", display:"Kendra Green"},
-    "kaelyn green": {table:"eddie", display:"Kaelyn Green"},
-    "maze green": {table:"eddie", display:"Maze Green"},
-
-    /* SOUTHSHORE */
+    /* Traveling Together */
+    "matt mamula": {table:"travelingtogether", display:"Matt Mamula"},
+    "christy micca": {table:"travelingtogether", display:"Christy Micca"},
+    "betsy funke": {table:"travelingtogether", display:"Betsy Funke"},
+    "tami funke": {table:"travelingtogether", display:"Tami Funke"},
+    "greg kutz": {table:"travelingtogether", display:"Greg Kutz"},
+    "kalyn kutz": {table:"travelingtogether", display:"Kalyn Kutz"},
+    "betsy reuteman": {table:"travelingtogether", display:"Betsy Reuteman"},
+    "justin garcia": {table:"travelingtogether", display:"Justin Garcia"},
+    /* South Shore */
     "michael mcneill": {table:"southshore", display:"Michael McNeill"},
     "chris mcneill": {table:"southshore", display:"Chris McNeill"},
     "denise mcneill": {table:"southshore", display:"Denise McNeill"},
@@ -208,17 +203,7 @@ const guests = {
     "gary terhune": {table:"southshore", display:"Gary Terhune"},
     "peter mcneill": {table:"southshore", display:"Peter McNeill"},
     "karen demun": {table:"southshore", display:"Karen DeMun"},
-
-    /* FISERV */
-    "andrew kaczmarek": {table:"fiserv", display:"Andrew Kaczmarek"},
-    "alison kaczmarek": {table:"fiserv", display:"Alison Kaczmarek"},
-    "jen reuteman": {table:"fiserv", display:"Jen Reuteman"},
-    "john retueman": {table:"fiserv", display:"John Retueman"},
-    "clare morin": {table:"fiserv", display:"Clare Morin"},
-    "mallory mowbray": {table:"fiserv", display:"Mallory Mowbray"},
-    "reese mowbray": {table:"fiserv", display:"Reese Mowbray"},
-
-    /* OLD FASHIONED */
+    /* IPA & Old Fashioned */
     "paula morehouse": {table:"oldfashioned", display:"Paula Morehouse"},
     "jack morehouse": {table:"oldfashioned", display:"Jack Morehouse"},
     "ellen marrett": {table:"oldfashioned", display:"Ellen Marrett"},
@@ -229,26 +214,23 @@ const guests = {
     "albert williams": {table:"oldfashioned", display:"Albert Williams"},
     "nicole panton": {table:"oldfashioned", display:"Nicole Panton"},
     "sharon plummer": {table:"oldfashioned", display:"Sharon Plummer"},
-
-    /* MORNING COFFEE */
+    /* Morning Coffee */
     "aidan russell": {table:"morningcoffee", display:"Aidan Russell"},
     "anjali russell": {table:"morningcoffee", display:"Anjali Russell"},
     "amayah russell": {table:"morningcoffee", display:"Amayah Russell"},
     "arianno russell": {table:"morningcoffee", display:"Arianno Russell"},
     "alena russell": {table:"morningcoffee", display:"Alena Russell"},
-    "felcia marrett": {table:"morningcoffee", display:"Felcia Marrett"},
+    "felicia marrett": {table:"morningcoffee", display:"Felcia Marrett"},
     "shennel marrett": {table:"morningcoffee", display:"Shennel Marrett"},
     "zachary plummer": {table:"morningcoffee", display:"Zachary Plummer"},
-
-    /* TRAVELING TOGETHER */
-    "matt mamula": {table:"travelingtogether", display:"Matt Mamula"},
-    "christy micca": {table:"travelingtogether", display:"Christy Micca"},
-    "betsy funke": {table:"travelingtogether", display:"Betsy Funke"},
-    "tami funke": {table:"travelingtogether", display:"Tami Funke"},
-    "greg kutz": {table:"travelingtogether", display:"Greg Kutz"},
-    "kalyn kutz": {table:"travelingtogether", display:"Kalyn Kutz"},
-    "betsy reuteman": {table:"travelingtogether", display:"Betsy Reuteman"},
-    "justin garcia": {table:"travelingtogether", display:"Justin Garcia"}
+    /* Fiserv */
+    "andrew kaczmarek": {table:"fiserv", display:"Andrew Kaczmarek"},
+    "alison kaczmarek": {table:"fiserv", display:"Alison Kaczmarek"},
+    "jen reuteman": {table:"fiserv", display:"Jen Reuteman"},
+    "john retueman": {table:"fiserv", display:"John Retueman"},
+    "clare morin": {table:"fiserv", display:"Clare Morin"},
+    "mallory mowbray": {table:"fiserv", display:"Mallory Mowbray"},
+    "reese mowbray": {table:"fiserv", display:"Reese Mowbray"}
 };
 
 const searchBox = document.getElementById("searchBox");
@@ -259,52 +241,30 @@ const label = document.getElementById("label");
 
 searchBox.addEventListener("input", function () {
     const input = this.value.trim().toLowerCase();
-
     if (!input) {
-        result.innerHTML = "";
-        viewport.style.display = "none";
         marker.style.display = "none";
         label.style.display = "none";
+        viewport.style.display = "none";
         return;
     }
-
-    const matchKey = Object.keys(guests)
-        .find(name => name.includes(input));
-
+    const matchKey = Object.keys(guests).find(name => name.includes(input));
     if (matchKey) {
         const guest = guests[matchKey];
         const table = tablePositions[guest.table];
-
-        result.innerHTML = `
-            We are so happy to have you celebrating with us,
-            <strong>${guest.display}</strong>!<br><br>
-            
-            <div class="couple-photo">
-                <img src="https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0567.png" alt="Jordein & Mari">
-            </div>
-            
-            <br>Please find your table below.<br><br>
-            Love, Jordein & Mari
-        `;
-
         marker.style.left = table.x + "%";
         marker.style.top = table.y + "%";
         marker.style.display = "block";
-
         label.style.left = table.x + "%";
         label.style.top = table.y + "%";
         label.textContent = table.label + " Table";
         label.style.display = "block";
-
         viewport.style.display = "block";
     } else {
-        result.innerHTML = "Name not found. Please check spelling.";
-        viewport.style.display = "none";
         marker.style.display = "none";
         label.style.display = "none";
+        viewport.style.display = "none";
     }
 });
 </script>
 </body>
 </html>
-
