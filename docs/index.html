@@ -18,26 +18,19 @@ body {
     min-height: 100vh;
     font-family: 'Playfair Display', serif;
     color: var(--text-dark);
-
-    /* Updated background position to show you clearly */
     background:
-        linear-gradient(
-            rgba(0,0,0,0.15),
-            rgba(0,0,0,0.15)
-        ),
-        url("https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_7081.jpg")
+        linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)),
+        url("https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0567.png")
         no-repeat center 65% / cover;
 }
 
-/* MAIN CARD */
 .overlay {
     max-width: 900px;
     margin: 28px auto;
     padding: 30px 26px;
     border-radius: 22px;
-    background: rgba(255,255,255,0.55);
+    background: rgba(255,255,255,0.60);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     box-shadow: 0 12px 32px rgba(0,0,0,0.35);
     text-align: center;
 }
@@ -54,8 +47,6 @@ h2 {
     color: #5f5f5f;
 }
 
-p { font-size: 17px; }
-
 input {
     width: 100%;
     max-width: 360px;
@@ -63,26 +54,43 @@ input {
     font-size: 18px;
     border-radius: 14px;
     border: none;
-    outline: none;
     margin-top: 14px;
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.95);
 }
 
-/* RESULT PANEL */
 .result {
-    margin-top: 18px;
-    padding: 18px;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.9);
+    margin-top: 20px;
+    padding: 24px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.95);
     font-size: 18px;
-    min-height: 70px;
+    min-height: 80px;
 }
 
-/* FLOORPLAN WINDOW */
-.floorplan-viewport {
-    margin: 26px auto 0;
+/* 💕 Couple Photo Styling */
+.couple-photo {
+    margin: 24px auto 0 auto;   /* centers horizontally */
     width: 100%;
     max-width: 520px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    display: flex;
+    justify-content: center;
+}
+
+.couple-photo img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+
+.floorplan-viewport {
+    margin: 28px auto 0;
+    width: 100%;
+    max-width: 600px;
     aspect-ratio: 7 / 5;
     border-radius: 18px;
     overflow: hidden;
@@ -91,33 +99,47 @@ input {
     box-shadow: 0 10px 24px rgba(0,0,0,0.35);
 }
 
-.floorplan-zoom {
+.floorplan-container {
+    position: relative;
     width: 100%;
     height: 100%;
-    background-image:
-        url("https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0492.jpg");
-    background-repeat: no-repeat;
-    background-size: 220%;
-    transition: background-position 0.6s ease;
 }
 
-/* FOOTER */
+.floorplan-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.table-marker {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid white;
+    box-shadow: 0 0 0 6px rgba(181,101,118,0.3);
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.table-label {
+    position: absolute;
+    transform: translate(-50%, -130%);
+    background: white;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    white-space: nowrap;
+    display: none;
+}
+
 .footer {
     margin-top: 24px;
     font-size: 16px;
-    color: #3f3f3f;
-}
-
-/* MOBILE */
-@media (max-width: 480px) {
-    .overlay {
-        margin: 16px;
-        padding: 22px 18px;
-    }
-
-    .result {
-        font-size: 16px;
-    }
 }
 </style>
 </head>
@@ -132,9 +154,12 @@ input {
 
     <div id="result" class="result"></div>
 
-    <!-- ZOOMED FLOORPLAN -->
     <div id="viewport" class="floorplan-viewport">
-        <div id="zoom" class="floorplan-zoom"></div>
+        <div class="floorplan-container">
+            <img src="https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0557.jpg">
+            <div id="marker" class="table-marker"></div>
+            <div id="label" class="table-label"></div>
+        </div>
     </div>
 
     <div class="footer">
@@ -143,43 +168,48 @@ input {
 </div>
 
 <script>
-/* FLOORPLAN POSITIONS (adjust if needed) */
 const tablePositions = {
-    eddie: "15% 10%",
-    eddie2: "85% 10%",
-    southshore: "15% 55%",
-    fiserv: "85% 55%",
-    oldfashioned: "15% 90%",
-    morningcoffee: "85% 90%"
+    eddie:{x:50,y:10,label:"Eddie"},
+    southshore:{x:50,y:38,label:"South Shore"},
+    travelingtogether:{x:20,y:38,label:"Traveling Together"},
+    oldfashioned:{x:80,y:38,label:"IPA & Old Fashioned"},
+    fiserv:{x:35,y:70,label:"Fiserv"},
+    morningcoffee:{x:65,y:70,label:"Morning Coffee"}
 };
 
-/* FULL GUEST LIST */
 const guests = {
+
+    /* EDDIE */
     "michele lucco": {table:"eddie", display:"Michele Lucco"},
     "james lucco": {table:"eddie", display:"James Lucco"},
     "kaylee corr": {table:"eddie", display:"Kaylee Corr"},
     "ryan corr": {table:"eddie", display:"Ryan Corr"},
+    "adeline corr": {table:"eddie", display:"Adeline Corr"},
     "henry corr": {table:"eddie", display:"Henry Corr"},
     "joseph lucco": {table:"eddie", display:"Joseph Lucco"},
     "emily lucco": {table:"eddie", display:"Emily Lucco"},
     "peter lucco": {table:"eddie", display:"Peter Lucco"},
     "nora lucco": {table:"eddie", display:"Nora Lucco"},
 
-    "brenda panton": {table:"eddie2", display:"Brenda Panton"},
-    "sandy plummer": {table:"eddie2", display:"Sandy Plummer"},
-    "stacie plummer": {table:"eddie2", display:"Stacie Plummer"},
-    "donte green": {table:"eddie2", display:"Donte Green"},
-    "kendra green": {table:"eddie2", display:"Kendra Green"},
-    "kaelyn green": {table:"eddie2", display:"Kaelyn Green"},
-    "maize green": {table:"eddie2", display:"Maize Green"},
+    /* EDDIE 2 */
+    "brenda panton": {table:"eddie", display:"Brenda Panton"},
+    "sandy plummer": {table:"eddie", display:"Sandy Plummer"},
+    "stacie plummer": {table:"eddie", display:"Stacie Plummer"},
+    "donte green": {table:"eddie", display:"Donte Green"},
+    "kendra green": {table:"eddie", display:"Kendra Green"},
+    "kaelyn green": {table:"eddie", display:"Kaelyn Green"},
+    "maze green": {table:"eddie", display:"Maze Green"},
 
+    /* SOUTHSHORE */
     "michael mcneill": {table:"southshore", display:"Michael McNeill"},
     "chris mcneill": {table:"southshore", display:"Chris McNeill"},
     "denise mcneill": {table:"southshore", display:"Denise McNeill"},
     "leeann terhune": {table:"southshore", display:"LeeAnn Terhune"},
+    "gary terhune": {table:"southshore", display:"Gary Terhune"},
     "peter mcneill": {table:"southshore", display:"Peter McNeill"},
     "karen demun": {table:"southshore", display:"Karen DeMun"},
 
+    /* FISERV */
     "andrew kaczmarek": {table:"fiserv", display:"Andrew Kaczmarek"},
     "alison kaczmarek": {table:"fiserv", display:"Alison Kaczmarek"},
     "jen reuteman": {table:"fiserv", display:"Jen Reuteman"},
@@ -188,6 +218,7 @@ const guests = {
     "mallory mowbray": {table:"fiserv", display:"Mallory Mowbray"},
     "reese mowbray": {table:"fiserv", display:"Reese Mowbray"},
 
+    /* OLD FASHIONED */
     "paula morehouse": {table:"oldfashioned", display:"Paula Morehouse"},
     "jack morehouse": {table:"oldfashioned", display:"Jack Morehouse"},
     "ellen marrett": {table:"oldfashioned", display:"Ellen Marrett"},
@@ -199,20 +230,32 @@ const guests = {
     "nicole panton": {table:"oldfashioned", display:"Nicole Panton"},
     "sharon plummer": {table:"oldfashioned", display:"Sharon Plummer"},
 
+    /* MORNING COFFEE */
     "aidan russell": {table:"morningcoffee", display:"Aidan Russell"},
     "anjali russell": {table:"morningcoffee", display:"Anjali Russell"},
-    "amaya russell": {table:"morningcoffee", display:"Amaya Russell"},
+    "amayah russell": {table:"morningcoffee", display:"Amayah Russell"},
     "arianno russell": {table:"morningcoffee", display:"Arianno Russell"},
     "alena russell": {table:"morningcoffee", display:"Alena Russell"},
     "felcia marrett": {table:"morningcoffee", display:"Felcia Marrett"},
     "shennel marrett": {table:"morningcoffee", display:"Shennel Marrett"},
-    "zachary plummer": {table:"morningcoffee", display:"Zachary Plummer"}
+    "zachary plummer": {table:"morningcoffee", display:"Zachary Plummer"},
+
+    /* TRAVELING TOGETHER */
+    "matt mamula": {table:"travelingtogether", display:"Matt Mamula"},
+    "christy micca": {table:"travelingtogether", display:"Christy Micca"},
+    "betsy funke": {table:"travelingtogether", display:"Betsy Funke"},
+    "tami funke": {table:"travelingtogether", display:"Tami Funke"},
+    "greg kutz": {table:"travelingtogether", display:"Greg Kutz"},
+    "kalyn kutz": {table:"travelingtogether", display:"Kalyn Kutz"},
+    "betsy reuteman": {table:"travelingtogether", display:"Betsy Reuteman"},
+    "justin garcia": {table:"travelingtogether", display:"Justin Garcia"}
 };
 
 const searchBox = document.getElementById("searchBox");
 const result = document.getElementById("result");
 const viewport = document.getElementById("viewport");
-const zoom = document.getElementById("zoom");
+const marker = document.getElementById("marker");
+const label = document.getElementById("label");
 
 searchBox.addEventListener("input", function () {
     const input = this.value.trim().toLowerCase();
@@ -220,32 +263,48 @@ searchBox.addEventListener("input", function () {
     if (!input) {
         result.innerHTML = "";
         viewport.style.display = "none";
+        marker.style.display = "none";
+        label.style.display = "none";
         return;
     }
 
     const matchKey = Object.keys(guests)
-        .find(name => name.startsWith(input));
+        .find(name => name.includes(input));
 
     if (matchKey) {
         const guest = guests[matchKey];
+        const table = tablePositions[guest.table];
 
         result.innerHTML = `
             We are so happy to have you celebrating with us,
-            <strong>${guest.display}</strong>!<br>
-            Your table is shown below.
-            <br><br>
+            <strong>${guest.display}</strong>!<br><br>
+            
+            <div class="couple-photo">
+                <img src="https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0567.png" alt="Jordein & Mari">
+            </div>
+            
+            <br>Please find your table below.<br><br>
             Love, Jordein & Mari
         `;
 
-        zoom.style.backgroundPosition =
-            tablePositions[guest.table];
+        marker.style.left = table.x + "%";
+        marker.style.top = table.y + "%";
+        marker.style.display = "block";
+
+        label.style.left = table.x + "%";
+        label.style.top = table.y + "%";
+        label.textContent = table.label + " Table";
+        label.style.display = "block";
 
         viewport.style.display = "block";
     } else {
         result.innerHTML = "Name not found. Please check spelling.";
         viewport.style.display = "none";
+        marker.style.display = "none";
+        label.style.display = "none";
     }
 });
 </script>
 </body>
 </html>
+
