@@ -15,7 +15,6 @@
 
 body {
     margin: 0;
-    min-height: 100vh;
     font-family: 'Playfair Display', serif;
     color: var(--text-dark);
     background: #fff;
@@ -26,7 +25,7 @@ body {
     margin: 28px auto;
     padding: 30px 26px;
     border-radius: 22px;
-    background: rgba(255,255,255,0.98); /* nearly opaque for clear images */
+    background: rgba(255,255,255,0.98);
     text-align: center;
     box-shadow: 0 12px 32px rgba(0,0,0,0.25);
 }
@@ -60,10 +59,11 @@ input {
     border-radius: 18px;
     background: rgba(255,255,255,0.95);
     font-size: 18px;
-    min-height: 80px;
+    min-height: 120px;
+    text-align: center;
 }
 
-/* Couple Photo Styling */
+/* Couple Photo */
 .couple-photo {
     margin: 24px auto;
     width: 100%;
@@ -82,6 +82,7 @@ input {
     display: block;
 }
 
+/* Floorplan */
 .floorplan-viewport {
     margin: 28px auto 0;
     width: 100%;
@@ -239,30 +240,44 @@ const viewport = document.getElementById("viewport");
 const marker = document.getElementById("marker");
 const label = document.getElementById("label");
 
-searchBox.addEventListener("input", function () {
+searchBox.addEventListener("input", function() {
     const input = this.value.trim().toLowerCase();
+
     if (!input) {
+        viewport.style.display = "none";
         marker.style.display = "none";
         label.style.display = "none";
-        viewport.style.display = "none";
+        result.innerHTML = `<div class="couple-photo">
+                <img src="https://nomanisanisland8.wordpress.com/wp-content/uploads/2026/02/img_0567.png" alt="Jordein & Mari">
+            </div>`;
         return;
     }
+
     const matchKey = Object.keys(guests).find(name => name.includes(input));
+
     if (matchKey) {
         const guest = guests[matchKey];
         const table = tablePositions[guest.table];
+
+        result.innerHTML = `
+            <p>We are so happy to have you celebrating with us, <strong>${guest.display}</strong>!</p>
+        `;
+
         marker.style.left = table.x + "%";
         marker.style.top = table.y + "%";
         marker.style.display = "block";
+
         label.style.left = table.x + "%";
         label.style.top = table.y + "%";
         label.textContent = table.label + " Table";
         label.style.display = "block";
+
         viewport.style.display = "block";
     } else {
+        result.innerHTML = `<p>Name not found. Please check spelling.</p>`;
+        viewport.style.display = "none";
         marker.style.display = "none";
         label.style.display = "none";
-        viewport.style.display = "none";
     }
 });
 </script>
